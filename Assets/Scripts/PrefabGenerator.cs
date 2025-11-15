@@ -3,26 +3,28 @@ using Random = UnityEngine.Random;
 
 public class PrefabGenerator: MonoBehaviour
 {
-    // --- Public Variables to set in the Inspector ---
-
     [Header("Prefab Settings")]
-    [Tooltip("The 2D prefab (e.g., a Sprite or UI element) to be instantiated.")]
+    //[Tooltip("The 2D prefab (e.g., a Sprite or UI element) to be instantiated.")]
     public GameObject prefabToGenerate;
 
     [Header("Generation Settings")]
-    [Tooltip("How many prefabs should be generated when the script starts.")]
+    //[Tooltip("How many prefabs should be generated when the script starts.")]
     public int numberOfPrefabs = 10;
-
-    [Tooltip("The area within which the prefabs will be spawned.")]
+    //[Tooltip("The area within which the prefabs will be spawned.")]
     public Vector2 spawnArea = new Vector2(10f, 5f);
 
 
     [Header("Randomization Settings")]
-    [Tooltip("Minimum and maximum scale for the X and Y axes.")]
+    //[Tooltip("Minimum and maximum scale for the X and Y axes.")]
     public Vector2 minMaxScale = new Vector2(0.5f, 2.0f);
 
-
-    // --- Unity Lifecycle Method ---
+    private void Awake()
+    {
+        if(prefabToGenerate == null)
+        {
+            Debug.LogError($"{nameof(PrefabGenerator)} No prefab assigned.");
+        }
+    }
 
     void Start()
     {
@@ -34,13 +36,30 @@ public class PrefabGenerator: MonoBehaviour
 
     void GeneratePrefabs()
     {
-        // Check if the prefabToGenerate slot is empty
         if(prefabToGenerate == null)
         {
-            Debug.LogError("PrefabGenerator: prefabToGenerate is null. Please assign a prefab in the Inspector.");
             return;
         }
 
+        float halfX = spawnArea.x * 0.5f;
+        float halfY = spawnArea.y * 0.5f;
+
+        for (int i = 0; i < numberOfPrefabs; i++)
+        {
+            // Position
+            Vector2 spawnPosition = new Vector2(
+                Random.Range(-halfX, halfX),
+                Random.Range(-halfX, halfX)
+            );
+
+            // Rotation
+            Quaternion rotation = randomizeRotation
+                ? Quaternion.Euler(0f, 0f, Random.Range(0f, 360f))
+                : Quaternion.identity;
+        }
+    }
+
+        /*
         for(int i = 0; i < numberOfPrefabs; i++)
         {
             // 1. Calculate a random position within the defined spawn area
@@ -90,5 +109,5 @@ public class PrefabGenerator: MonoBehaviour
         }
 
         Debug.Log($"Successfully generated {numberOfPrefabs} prefabs.");
-    }
+    }*/
 }
